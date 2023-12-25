@@ -5,6 +5,7 @@ import logo from "../../../public/images/logo.png";
 import Image from "next/image";
 import Inputs from "../components/Inputs";
 import axios from "axios";
+import { METHODS } from "http";
 const AuthPage = () => {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
@@ -17,10 +18,12 @@ const AuthPage = () => {
   }, []);
   const register = useCallback(async () => {
     try {
-      await axios.post("/api/register", {
-        email,
-        name,
-        password,
+      await fetch("http://localhost:3000/api/register", {
+        method: "POST",
+        body: JSON.stringify({ email, name, password }),
+        headers: {
+          "Content-Type": "application/json",
+        },
       });
     } catch (error) {
       console.log(error);

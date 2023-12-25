@@ -1,24 +1,23 @@
 import bcrypt from "bcrypt";
-import prismadb from "@/app/lib/prismadb";
 import { NextResponse } from "next/server";
+import UserModel from "@/app/models/User";
+import connectDB from "@/app/helper/connectdb";
 export const POST = async (req: any) => {
   try {
     const { email, name, password } = req.body;
-    const existingUser = await prismadb.user.findUnique({
-      where: {
-        email,
-      },
-    });
+    await connectDB();
+    const existingUser = await UserModel.findOne({ email });
+    console.log(email, name, password);
     if (existingUser) {
       console.error("Email already taken");
       return NextResponse.json({ error: "Email taken" });
     }
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = await prismadb.user.create({
+    const user = await UserModel.create({
       data: {
         email,
         name,
-        hashedPassword,
+        password: hashedPassword,
         image: "",
         emailVerified: new Date(),
       },
