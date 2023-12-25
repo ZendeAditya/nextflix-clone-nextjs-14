@@ -4,6 +4,7 @@ import React, { useCallback, useState } from "react";
 import logo from "../../../public/images/logo.png";
 import Image from "next/image";
 import Inputs from "../components/Inputs";
+import axios from "axios";
 const AuthPage = () => {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
@@ -14,6 +15,17 @@ const AuthPage = () => {
       currentVarient === "login" ? "register" : "login"
     );
   }, []);
+  const register = useCallback(async () => {
+    try {
+      await axios.post("/api/register", {
+        email,
+        name,
+        password,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }, [email, name, password]);
   return (
     <div
       className={`${auth.hero} relative h-full w-full bg-no-repeat bg-center bg-fixed bg-cover text-start left-0`}
@@ -58,7 +70,10 @@ const AuthPage = () => {
                 value={password}
               />
             </div>
-            <button className="bg-red-600 py-3 text-white rounded-md w-full mt-10 hover:bg-red-700 transition">
+            <button
+              onClick={register}
+              className="bg-red-600 py-3 text-white rounded-md w-full mt-10 hover:bg-red-700 transition"
+            >
               {varient === "login" ? "Sign In" : "Sign Up"}
             </button>
             <p className="text-neutral-500 mt-12">
@@ -71,7 +86,6 @@ const AuthPage = () => {
               >
                 {varient === "login" ? "Create an account" : "Login"}
               </span>
-              .
             </p>
           </div>
         </div>
