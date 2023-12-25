@@ -2,7 +2,6 @@ import bcrypt from "bcrypt";
 import { NextResponse } from "next/server";
 import User from "@/app/models/User";
 import connectDB from "@/app/helper/connectdb";
-import { resourceUsage } from "process";
 
 export const POST = async (req: any) => {
   try {
@@ -15,15 +14,14 @@ export const POST = async (req: any) => {
       console.error("Email already taken");
       return NextResponse.json({ error: "Email taken" });
     }
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPasswords = await bcrypt.hash(password, 10);
+    console.log("hash", hashedPasswords);
     const user = await User.create({
-      data: {
-        name,
-        email,
-        password: hashedPassword,
-        image: "",
-        emailVerified: new Date(),
-      },
+      name,
+      email,
+      hashedPassword: hashedPasswords,
+      image: "",
+      emailVerified: new Date(),
     });
 
     console.log("user", user);
