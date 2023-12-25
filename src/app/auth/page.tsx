@@ -25,10 +25,12 @@ const AuthPage = () => {
           "Content-Type": "application/json",
         },
       });
+      console.log(email, name, password);
     } catch (error) {
       console.log(error);
     }
   }, [email, name, password]);
+
   return (
     <div
       className={`${auth.hero} relative h-full w-full bg-no-repeat bg-center bg-fixed bg-cover text-start left-0`}
@@ -42,43 +44,46 @@ const AuthPage = () => {
             <h2 className="text-white text-4xl mb-8 font-semibold text-center">
               {varient === "login" ? "Sign In" : "Register"}
             </h2>
-            <div className="flex flex-col gap-4">
-              {varient === "register" && (
+            <form>
+              <div className="flex flex-col gap-4">
+                {varient === "register" && (
+                  <Inputs
+                    label="Username"
+                    onChange={(e: {
+                      target: { value: React.SetStateAction<string> };
+                    }) => setName(e.target.value)}
+                    id="username"
+                    type="text"
+                    value={name}
+                  />
+                )}
                 <Inputs
-                  label="Username"
+                  label="Email"
                   onChange={(e: {
                     target: { value: React.SetStateAction<string> };
-                  }) => setName(e.target.value)}
-                  id="username"
-                  type="text"
-                  value={name}
+                  }) => setEmail(e.target.value)}
+                  id="email"
+                  type="email"
+                  value={email}
                 />
-              )}
-              <Inputs
-                label="Email"
-                onChange={(e: {
-                  target: { value: React.SetStateAction<string> };
-                }) => setEmail(e.target.value)}
-                id="email"
-                type="email"
-                value={email}
-              />
-              <Inputs
-                label="Password"
-                onChange={(e: {
-                  target: { value: React.SetStateAction<string> };
-                }) => setPassword(e.target.value)}
-                id="password"
-                type="password"
-                value={password}
-              />
-            </div>
-            <button
-              onClick={register}
-              className="bg-red-600 py-3 text-white rounded-md w-full mt-10 hover:bg-red-700 transition"
-            >
-              {varient === "login" ? "Sign In" : "Sign Up"}
-            </button>
+                <Inputs
+                  label="Password"
+                  onChange={(e: {
+                    target: { value: React.SetStateAction<string> };
+                  }) => setPassword(e.target.value)}
+                  id="password"
+                  type="password"
+                  value={password}
+                />
+              </div>
+              <button
+                onClick={register}
+                type="submit"
+                className="bg-red-600 py-3 text-white rounded-md w-full mt-10 hover:bg-red-700 transition"
+              >
+                {varient === "login" ? "Sign In" : "Sign Up"}
+              </button>
+            </form>
             <p className="text-neutral-500 mt-12">
               {varient === "login"
                 ? "First time using Netflix?"
