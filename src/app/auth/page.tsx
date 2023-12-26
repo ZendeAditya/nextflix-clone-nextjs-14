@@ -1,16 +1,19 @@
 "use client";
 import auth from "./auth.module.css";
 import React, { useCallback, useState } from "react";
-import logo from "../../../public/images/logo.png";
+import { signIn } from "next-auth/react";
 import Image from "next/image";
 import Inputs from "../components/Inputs";
 import axios from "axios";
-import { METHODS } from "http";
+import { useRouter } from "next/navigation";
+import { FcGoogle } from "react-icons/fc";
+import { FaGit, FaGithub } from "react-icons/fa";
 const AuthPage = () => {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [varient, setVarient] = useState("login");
+  const router = useRouter();
   const toggleVariant = useCallback(() => {
     setVarient((currentVarient) =>
       currentVarient === "login" ? "register" : "login"
@@ -31,6 +34,23 @@ const AuthPage = () => {
     }
   }, [email, name, password]);
 
+  const login = useCallback(
+    async (e: any) => {
+      e.preventDefault();
+      try {
+        await signIn("credentials", {
+          email,
+          password,
+          redirect: false,
+          callbackUrl: "/profile",
+        });
+        router.push("/");
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    [email, password, router]
+  );
   return (
     <div
       className={`${auth.hero} relative h-full w-full bg-no-repeat bg-center bg-fixed bg-cover text-start left-0`}
@@ -77,12 +97,26 @@ const AuthPage = () => {
                 />
               </div>
               <button
-                onClick={register}
+                onClick={varient === "login" ? login : register}
                 type="submit"
                 className="bg-red-600 py-3 text-white rounded-md w-full mt-10 hover:bg-red-700 transition"
               >
                 {varient === "login" ? "Sign In" : "Sign Up"}
               </button>
+              <div className="flex flex-row items-center gap-4 mt-8 justify-center">
+                <div
+                  onClick={() => signIn("google", { callbackUrl: "/" })}
+                  className="w-10 h-10 bg-white rounded-full flex items-center  justify-center cursor-pointer hover:opacity-80 transition"
+                >
+                  <FcGoogle size={30} />
+                </div>
+                <div
+                  onClick={() => signIn("github", { callbackUrl: "/" })}
+                  className="w-10 h-10 bg-white rounded-full flex items-center  justify-center cursor-pointer hover:opacity-80 transition"
+                >
+                  <FaGithub size={30} />
+                </div>
+              </div>
             </form>
             <p className="text-neutral-500 mt-12">
               {varient === "login"
